@@ -1,30 +1,14 @@
 import React, { useState } from "react";
 import "./App.css";
+import { useDispatch, useSelector } from "react-redux";
+import { addToDo, completeToDo, removeToDo } from "./actions";
 
 function App() {
-
- 
-  const [toDos, setToDos] = useState([
-    { text: "Learn about React", complete: false },
-    { text: "Meet friend for lunch", complete: false },
-  ]);
   const [toDo, setToDo] = useState("");
-
-  // create  a function to add a to do
-  const addToDo = (e) => {
-    e.preventDefault();
-    setToDos([...toDos, { text: toDo, complete: false }]);
-  };
-  const completeToDo = (index) => {
-    const newToDos = [...toDos];
-    newToDos[index].complete = !newToDos[index].complete  ;
-    setToDos(newToDos);
-  };
-  const removeToDo = (index) => {
-    const newToDos = [...toDos];
-    newToDos.splice(index, 1);
-    setToDos(newToDos);
-  };
+  const toDos = useSelector((state) => state.root.todoReducers.todos);
+ 
+  const dispatch = useDispatch();
+  
   return (
     <div className="App">
       <header className="App-header">
@@ -36,31 +20,43 @@ function App() {
             value={toDo}
             onChange={(e) => setToDo(e.target.value)}
           />
-          <button onClick={(e) => addToDo(e)} type="submit">
+          <button onClick={(e) =>
+          e.preventDefault() &
+           dispatch(addToDo(toDo),
+            setToDo("")
+            )} type="submit">
             Add
           </button>
+
         </form>
 
         <div className="todo-list">
-          {toDos.map((toDo, index) => (
-            <div className="todos">
-              <li key={index} className={toDo.complete ? 'completed': ''}>
-                <span> 
-
-                {toDo.text}
-                </span>
+          {toDos.map((toDo) => (
+          <div className="todos" key={toDo.id} >
+              <li  className={toDo.isCompleted ? "completed" : ""}>
+                <span>{toDo.data}</span>
               </li>
-              <button onClick={(e)=>{
-                e.preventDefault();
-                completeToDo(index);
-              }}> {toDo.complete ? 'to-do': 'done'} </button>
-              <button onClick={(e)=>{
-                e.preventDefault();
-                removeToDo (index);
-              }} >Remove</button>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  dispatch(completeToDo(toDo.id));
+                }}
+              >
+                {" "}
+                {toDo.isCompleted ? "to-do" : "done"}{" "}
+              </button>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  dispatch(removeToDo(toDo.id));
+                }}
+              >
+                Remove
+              </button>
             </div>
           ))}
         </div>
+
       </header>
     </div>
   );
