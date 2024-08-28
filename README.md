@@ -1,5 +1,7 @@
 # React toDo App  with Redux
 
+hosted at vercel https://task-kifli.vercel.app/(https://task-kifli.vercel.app/).
+
 This project was created with [Create React App](https://github.com/facebook/create-react-app).
 
 A simple React To-Do App using redux
